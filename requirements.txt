@@ -1,0 +1,7 @@
+django>=3.2
+django-picklefield>=3.0
+croniter>=1.3
+django-import-export
+tablib
+plivo
+opencv-python

@@ -1,0 +1,12 @@
+# tests
+freezegun==1.2.1
+psycopg2==2.*
+
+# devenv
+pre-commit
+mypy
+debugpy==1.5.1
+plivo
+
+# django-toosimple-q
+-e .

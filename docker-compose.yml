@@ -1,0 +1,67 @@
+# Docker-compose configuration to run tests
+
+version: "3"
+
+x-default-django: &default-django
+    build:
+        context: .
+        args:
+            TOOSIMPLEQ_DJ_VERSION: ${TOOSIMPLEQ_DJ_VERSION:-4.1}
+            TOOSIMPLEQ_PY_VERSION: ${TOOSIMPLEQ_PY_VERSION:-3.11}
+    # depends_on:
+    # - postgres
+    # - toxiproxy-config
+    environment:
+        TOOSIMPLEQ_TEST_DB: ${TOOSIMPLEQ_TEST_DB:-sqlite}
+        POSTGRES_HOST: 154.53.47.77
+        POSTGRES_PORT: 5432
+
+        PLIVO_AUTH_ID: MAN2NMN2FJZJDJMZVKNW
+        PLIVO_AUTH_TOKEN: YjFhYjkzZjJhZDQ4MTI0YmU1NjlmYjEwMmRiNjVj
+        PLIVO_SRC_PHONE_NO: "+15615848495"
+        PLIVO_ALLOW_SEND_MSG: "true"
+
+        POSTGRES_HOST_WORKER: 154.53.47.77
+        POSTGRES_PORT_WORKER: 5432
+    volumes:
+        - .:/app
+
+services:
+    django:
+        <<: *default-django
+        command: runserver 0.0.0.0:8000
+        ports:
+            - 8000:8000
+            - 3000:3000
+
+    worker:
+        <<: *default-django
+        command: worker --queue demo --reload never
+
+    # postgres:
+    #   image: postgres
+    #   environment:
+    #     POSTGRES_PASSWORD: postgres
+    #   ports:
+    #     - 5432:5432
+
+    # postgres-laggy:
+    #   image: ghcr.io/shopify/toxiproxy
+    #   depends_on:
+    #     - postgres
+    #   environment:
+    #     POSTGRES_PASSWORD: postgres
+    #   ports:
+    #     - 5433:5433
+
+    # toxiproxy-config:
+    #   image: docker:cli
+    #   depends_on:
+    #     - postgres-laggy
+    #   volumes:
+    #     - /var/run/docker.sock:/var/run/docker.sock
+    #   command: |
+    #     sh -c '
+    #       docker exec django-toosimple-q-postgres-laggy-1 /toxiproxy-cli create -l 0.0.0.0:5433 -u postgres:5432 postgres
+    #       docker exec django-toosimple-q-postgres-laggy-1 /toxiproxy-cli toxic add -t latency -n my_lag -a latency=100 -a jitter=5 postgres
+    #     '
