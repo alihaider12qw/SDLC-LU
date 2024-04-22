@@ -16,11 +16,6 @@ x-default-django: &default-django
         POSTGRES_HOST: 154.53.47.77
         POSTGRES_PORT: 5432
 
-        PLIVO_AUTH_ID: MAN2NMN2FJZJDJMZVKNW
-        PLIVO_AUTH_TOKEN: YjFhYjkzZjJhZDQ4MTI0YmU1NjlmYjEwMmRiNjVj
-        PLIVO_SRC_PHONE_NO: "+15615848495"
-        PLIVO_ALLOW_SEND_MSG: "true"
-
         POSTGRES_HOST_WORKER: 154.53.47.77
         POSTGRES_PORT_WORKER: 5432
     volumes:
